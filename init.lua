@@ -139,12 +139,16 @@ local ns = {noremap = true, silent = true}
 local n = {noremap = true}
 local e = {expr = true}
 
--- Tab Completion & Snippet Traversal
-map('i', '<CR>',    [[pumvisible() ? compe#close() . "\<CR>" : "\<CR>"]], e)
-map('i', '<Tab>',   [[vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : compe#confirm("<Tab>")]], e)
-map('s', '<Tab>',   [[vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<Tab>'               ]], e)
-map('i', '<S-Tab>', [[vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-n>'               ]], e)
-map('s', '<S-Tab>', [[vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'             ]], e)
+-- Tab Completion
+map('i', '<CR>',    'pumvisible() ? compe#close() . "\\<CR>" : "\\<CR>"', e)
+map('i', '<Tab>',   'compe#confirm("<Tab>")', e)
+map('i', '<S-Tab>', '<C-n>', e)
+
+-- Snippet Traversal
+map('s', '<C-l>', '"<Plug>(vsnip-jump-next)"', e)
+map('i', '<C-l>', '"<Plug>(vsnip-jump-next)"', e)
+map('s', '<C-h>', '"<Plug>(vsnip-jump-prev)"', e)
+map('i', '<C-h>', '"<Plug>(vsnip-jump-prev)"', e)
 
 -- LSP Movement
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', ns)
@@ -158,26 +162,27 @@ map('n', '<leader>lrw', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', ns
 map('n', '<leader>llw', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', ns)
 
 -- LSP Actions
-map('n', 'K', ':Lspsaga hover_doc<CR>', ns)
+map('n', 'K',     ':Lspsaga hover_doc<CR>', ns)
 map('n', '<C-u>', '<cmd>lua require("lspsaga.action").smart_scroll_with_saga(-1)<CR>', ns)
 map('n', '<C-d>', '<cmd>lua require("lspsaga.action").smart_scroll_with_saga(1)<CR>', ns)
 
 map('n', 'gh', ':Lspsaga lsp_finder<CR>', ns)
 
-map('n', '<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', ns)
+map('n', '<leader>lt',  '<cmd>lua vim.lsp.buf.type_definition()<CR>', ns)
 map('n', '<leader>lrn', ':Lspsaga rename<CR>', ns)
 map('n', '<leader>lca', ':Lspsaga code_action<CR>', ns)
 map('v', '<leader>lca', ':<C-U>Lspsaga range_code_action<CR>', ns)
-map('n', '<leader>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', ns)
+map('n', '<leader>lf',  '<cmd>lua vim.lsp.buf.formatting()<CR>', ns)
 
 -- Float Terminal From Lspsaga
 map('n', '<C-t>', ':Lspsaga open_floaterm<CR>', ns)
 map('t', '<C-t>', '<C-\\><C-n>:Lspsaga close_floaterm<CR>', ns)
 
 -- Miscellaneous
-map('n', '<C-l>', '<cmd>noh<CR>', n)    -- Clear highlights
-map('n', '<leader>o', 'm`o<Esc>``', n)  -- Insert a newline in normal mode
-map('n', '<leader>.', 'yyp', n)         -- Duplicate the current line downwards
+map('n', '<leader>c', '<cmd>noh<CR>', n) -- Clear highlights
+map('n', '<leader>o', 'm`o<Esc>``', n)   -- Insert a newline in normal mode
+map('n', '<leader>.', 'yyp', n)          -- Duplicate the current line downwards
+map('n', '<leader>b', ':b#<CR>', ns)     -- Switch to the previous buffer
 
 -- Telescope Triggers
 map('n', '<leader>tf', '<cmd>lua require("telescope.builtin").find_files()<CR>', n)
