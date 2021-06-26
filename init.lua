@@ -50,6 +50,7 @@ opt.cursorline = true     -- Highlight the selected line
 opt.signcolumn = 'yes'    -- Show diagnostics in their own column
 opt.spell = true          -- Enable spell checking
 opt.spelllang = 'en_us'   -- Set language to English
+opt.updatetime = 750      -- Trigger timeouts every 750ms
 
 -- Make Things Look Nice
 cmd 'colorscheme gruvbox-material'
