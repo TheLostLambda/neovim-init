@@ -51,6 +51,7 @@ opt.signcolumn = 'yes'    -- Show diagnostics in their own column
 opt.spell = true          -- Enable spell checking
 opt.spelllang = 'en_us'   -- Set language to English
 opt.updatetime = 750      -- Trigger timeouts every 750ms
+opt.autoread = true       -- Automatically reload changed files
 
 -- Make Things Look Nice
 cmd 'colorscheme gruvbox-material'
@@ -130,6 +131,11 @@ inlay_hints = {
 -- Keep an eye on this https://github.com/neovim/neovim/pull/12378
 cmd [[
 autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs :lua require('lsp_extensions').inlay_hints(inlay_hints)
+]]
+
+-- Reload files changed outside of Neovim
+cmd [[
+autocmd CursorHold,FocusGained * checktime
 ]]
 
 -- Key Bindings
