@@ -17,6 +17,7 @@ require 'paq-nvim' {
     'glepnir/lspsaga.nvim';               -- Add some nice UI components to LSP
     'TheLostLambda/lualine-lsp-progress'; -- Add an LSP status-bar widget
     'RRethy/vim-illuminate';              -- Use LSP to highlight hovered symbols
+    'blackCauldron7/surround.nvim';       -- Pair brackets and surround selections
     'hrsh7th/vim-vsnip';                  -- Basic snippet support
     'rafamadriz/friendly-snippets';       -- A collection of community snippets
     'nvim-telescope/telescope.nvim';      -- A powerful fuzzy-finder
@@ -49,7 +50,7 @@ opt.wrap = false          -- Disable line wrap
 opt.cursorline = true     -- Highlight the selected line
 opt.signcolumn = 'yes'    -- Show diagnostics in their own column
 opt.spell = true          -- Enable spell checking
-opt.spelllang = 'en_us'   -- Set language to English
+opt.spelllang = 'en_gb'   -- Set language to English
 opt.updatetime = 750      -- Trigger timeouts every 750ms
 opt.autoread = true       -- Automatically reload changed files
 
@@ -79,6 +80,7 @@ local lsp = require('lspconfig')
 lsp.rust_analyzer.setup(universal_config)
 lsp.clangd.setup(universal_config)
 lsp.pyls.setup(universal_config)
+lsp.julials.setup(universal_config)
 
 -- Load a Fancy Status-Line (With LSP Status)
 require('lualine').setup {
@@ -110,6 +112,9 @@ require('compe').setup {
     },
     preselect = 'always'
 }
+
+-- Complete Bracket Pairs
+require('surround').setup{}
 
 -- Set Up Which-Key To Show Keybindings & Spelling
 require('which-key').setup {
