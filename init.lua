@@ -14,7 +14,7 @@ require 'paq-nvim' {
     'nvim-lua/lsp_extensions.nvim';       -- Enable LSP protocol extensions
     'hrsh7th/nvim-compe';                 -- Enable completions for LSP
     'ray-x/lsp_signature.nvim';           -- Enable function parameter hints in LSP
-    'glepnir/lspsaga.nvim';               -- Add some nice UI components to LSP
+    {'jasonrhansen/lspsaga.nvim', branch='finder-preview-fixes'}; -- 'glepnir/lspsaga.nvim';               -- Add some nice UI components to LSP
     'TheLostLambda/lualine-lsp-progress'; -- Add an LSP status-bar widget
     'RRethy/vim-illuminate';              -- Use LSP to highlight hovered symbols
     'blackCauldron7/surround.nvim';       -- Pair brackets and surround selections
@@ -29,30 +29,32 @@ require 'paq-nvim' {
 }
 
 -- Built-In Options
-opt.expandtab = true      -- Use spaces instead of tabs
-opt.hidden = true         -- Enable background buffers
-opt.ignorecase = true     -- Ignore case
-opt.joinspaces = false    -- No double spaces with join
-opt.list = true           -- Show some invisible characters
-opt.number = true         -- Show line numbers
-opt.relativenumber = true -- Relative line numbers
-opt.scrolloff = 4         -- Lines of context
-opt.shiftround = true     -- Round indent
-opt.shiftwidth = 2        -- Size of an indent
-opt.sidescrolloff = 8     -- Columns of context
-opt.smartcase = true      -- Do not ignore case with capitals
-opt.smartindent = true    -- Insert indents automatically
-opt.splitbelow = true     -- Put new windows below current
-opt.splitright = true     -- Put new windows right of current
-opt.tabstop = 2           -- Number of spaces tabs count for
-opt.termguicolors = true  -- True color support
-opt.wrap = false          -- Disable line wrap
-opt.cursorline = true     -- Highlight the selected line
-opt.signcolumn = 'yes'    -- Show diagnostics in their own column
-opt.spell = true          -- Enable spell checking
-opt.spelllang = 'en_gb'   -- Set language to English
-opt.updatetime = 750      -- Trigger timeouts every 750ms
-opt.autoread = true       -- Automatically reload changed files
+opt.expandtab = true          -- Use spaces instead of tabs
+opt.hidden = true             -- Enable background buffers
+opt.ignorecase = true         -- Ignore case
+opt.joinspaces = false        -- No double spaces with join
+opt.list = true               -- Show some invisible characters
+opt.number = true             -- Show line numbers
+opt.relativenumber = true     -- Relative line numbers
+opt.scrolloff = 4             -- Lines of context
+opt.shiftround = true         -- Round indent
+opt.shiftwidth = 2            -- Size of an indent
+opt.sidescrolloff = 8         -- Columns of context
+opt.smartcase = true          -- Do not ignore case with capitals
+opt.smartindent = true        -- Insert indents automatically
+opt.splitbelow = true         -- Put new windows below current
+opt.splitright = true         -- Put new windows right of current
+opt.tabstop = 2               -- Number of spaces tabs count for
+opt.termguicolors = true      -- True color support
+opt.wrap = false              -- Disable line wrap
+opt.cursorline = true         -- Highlight the selected line
+opt.signcolumn = 'yes'        -- Show diagnostics in their own column
+opt.spell = true              -- Enable spell checking
+opt.spelllang = 'en_gb'       -- Set language to English
+opt.updatetime = 750          -- Trigger timeouts every 750ms
+opt.autoread = true           -- Automatically reload changed files
+opt.swapfile = false          -- Disable the swap files (allow multiple access)
+opt.clipboard = 'unnamedplus' -- Use the system clipboard
 
 -- Make Things Look Nice
 cmd 'colorscheme gruvbox-material'
@@ -78,8 +80,11 @@ local universal_config = {
 
 local lsp = require('lspconfig')
 lsp.rust_analyzer.setup(universal_config)
-lsp.clangd.setup(universal_config)
-lsp.pyls.setup(universal_config)
+lsp.clangd.setup {
+  on_attach = universal_config.on_attach,
+  cmd = { 'clangd', '--background-index', '-header-insertion=never' }
+}
+lsp.pylsp.setup(universal_config)
 lsp.julials.setup(universal_config)
 
 -- Load a Fancy Status-Line (With LSP Status)
@@ -143,6 +148,10 @@ cmd [[
 autocmd CursorHold,FocusGained * checktime
 ]]
 
+-- Some aliases for case-insensitivity
+cmd ":command W w"
+cmd ":command Wq wq"
+
 -- Key Bindings
 g.mapleader = " "
 
@@ -194,7 +203,7 @@ map('t', '<C-t>', '<C-\\><C-n>:Lspsaga close_floaterm<CR>', ns)
 map('n', '<leader>c', '<cmd>noh<CR>', n) -- Clear highlights
 map('n', '<leader>o', 'm`o<Esc>``', n)   -- Insert a newline in normal mode
 map('n', '<leader>.', 'yyp', n)          -- Duplicate the current line downwards
-map('n', '<leader>b', ':b#<CR>', ns)     -- Switch to the previous buffer
+map('n', '<leader>b', '<cmd>b#<CR>', ns) -- Switch to the previous buffer
 
 -- Telescope Triggers
 map('n', '<leader>tf', '<cmd>lua require("telescope.builtin").find_files()<CR>', n)
