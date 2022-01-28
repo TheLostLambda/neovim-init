@@ -5,17 +5,16 @@ local g = vim.g      -- A table to access global variables
 local opt = vim.opt  -- To set options
 
 -- Install Packages
-require 'paq-nvim' {
+require 'paq' {
     'savq/paq-nvim';                      -- Manage the package manager
     'sainnhe/gruvbox-material';           -- A nice colorscheme
     'hoob3rt/lualine.nvim';               -- A snazzy status-line
     'nvim-treesitter/nvim-treesitter';    -- Support for better syntax highlighting
     'neovim/nvim-lspconfig';              -- Automatically launch LSP servers
     'nvim-lua/lsp_extensions.nvim';       -- Enable LSP protocol extensions
-    'hrsh7th/nvim-compe';                 -- Enable completions for LSP
+    'hrsh7th/nvim-compe';                 -- Enable completions for LSP (Update to nvim-cmp!)
     'ray-x/lsp_signature.nvim';           -- Enable function parameter hints in LSP
-    {'jasonrhansen/lspsaga.nvim', branch='finder-preview-fixes'}; -- 'glepnir/lspsaga.nvim';               -- Add some nice UI components to LSP
-    'TheLostLambda/lualine-lsp-progress'; -- Add an LSP status-bar widget
+    'tami5/lspsaga.nvim';                 -- Add some nice UI components to LSP
     'RRethy/vim-illuminate';              -- Use LSP to highlight hovered symbols
     'blackCauldron7/surround.nvim';       -- Pair brackets and surround selections
     'hrsh7th/vim-vsnip';                  -- Basic snippet support
@@ -86,17 +85,11 @@ lsp.clangd.setup {
 }
 lsp.pylsp.setup(universal_config)
 lsp.julials.setup(universal_config)
+lsp.clojure_lsp.setup(universal_config)
+lsp.emmet_ls.setup(universal_config)
 
--- Load a Fancy Status-Line (With LSP Status)
-require('lualine').setup {
-    options = {theme = 'gruvbox_material'},
-    sections = {
-        lualine_c = {
-            {'filename', separator = ''},
-            'lsp_progress'
-        }
-    }
-}
+-- Load a Fancy Status-Line
+require('lualine').setup()
 
 -- Set Up Auto-Completion & Snippets
 opt.completeopt = {'menuone', 'noinsert', 'noselect'}
@@ -138,10 +131,10 @@ inlay_hints = {
     enabled = {'TypeHint', 'ChainingHint'}
 }
 
--- Keep an eye on this https://github.com/neovim/neovim/pull/12378
-cmd [[
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs :lua require('lsp_extensions').inlay_hints(inlay_hints)
-]]
+-- Keep an eye on this https://github.com/neovim/neovim/pull/14661
+--cmd [[
+--autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs :lua require('lsp_extensions').inlay_hints(inlay_hints)
+--]]
 
 -- Reload files changed outside of Neovim
 cmd [[
