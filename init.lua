@@ -87,6 +87,8 @@ lsp.pylsp.setup(universal_config)
 lsp.julials.setup(universal_config)
 lsp.clojure_lsp.setup(universal_config)
 lsp.emmet_ls.setup(universal_config)
+lsp.svelte.setup(universal_config)
+lsp.tsserver.setup(universal_config)
 
 -- Load a Fancy Status-Line
 require('lualine').setup()
