@@ -25,6 +25,7 @@ require 'paq' {
   'folke/trouble.nvim';               -- Summarizes errors and lints
   'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
   'windwp/nvim-autopairs';            -- Automatically pair some characters
+  'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
   'Olical/conjure';                   -- Add lovely lisp support
   'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
   'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
@@ -72,9 +73,12 @@ require('nvim-treesitter.configs').setup {
   indent = {enable = true},
 }
 
+-- Set Up Intelligent Commenting
+require('Comment').setup()
+
 -- Treesitter Based Folding
-opt.foldmethod = 'expr'
-opt.foldexpr = 'nvim_treesitter#foldexpr()'
+-- opt.foldmethod = 'expr'
+-- opt.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -- Set Up LSP UI & Servers
 require('lspsaga').init_lsp_saga()
