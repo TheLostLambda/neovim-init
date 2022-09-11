@@ -18,6 +18,7 @@ require 'paq' {
   'RRethy/vim-illuminate';            -- Use LSP to highlight hovered symbols
   'hrsh7th/vim-vsnip';                -- Basic snippet support
   'rafamadriz/friendly-snippets';     -- A collection of community snippets
+  'ggandor/leap.nvim';                -- Provides enhanced buffer navigation
   'nvim-telescope/telescope.nvim';    -- A powerful fuzzy-finder
   'nvim-lua/plenary.nvim';            -- A dependency for Telescope
   'nvim-lua/popup.nvim';              -- Another dependency for Telescope
@@ -26,10 +27,11 @@ require 'paq' {
   'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
   'windwp/nvim-autopairs';            -- Automatically pair some characters
   'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
-  'Olical/conjure';                   -- Add lovely lisp support
+  -- 'Olical/conjure';                   -- Add lovely lisp support
   'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
   'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
   'radenling/vim-dispatch-neovim';    -- A neovim patch for `vim-dispatch`
+  'edwinb/idris2-vim';                -- Idris 2 language support (no LSP yet)
 }
 
 -- Built-In Options
@@ -63,6 +65,9 @@ opt.clipboard = 'unnamedplus'  -- Use the system clipboard
 -- Make Things Look Nice
 cmd 'colorscheme gruvbox-material'
 
+-- Set up enhanced buffer navigation
+require('leap').set_default_keymaps()
+
 -- Set Up Intelligent Highlighting & Indentation
 require('nvim-treesitter.configs').setup {
   highlight = {
@@ -84,7 +89,7 @@ require('lspsaga').init_lsp_saga()
 
 local universal_config = {
   on_attach = function(client)
-    require('illuminate').on_attach(client)
+    -- require('illuminate').on_attach(client)
   end
 }
 
@@ -215,6 +220,7 @@ map('n', '<leader>c', '<cmd>noh<CR>', n) -- Clear highlights
 map('n', '<leader>o', 'm`o<Esc>``', n)   -- Insert a newline in normal mode
 map('n', '<leader>.', 'yyp', n)          -- Duplicate the current line downwards
 map('n', '<leader>b', '<cmd>b#<CR>', ns) -- Switch to the previous buffer
+map('n', '<leader>w', 'm`gqip``', ns)        -- Wrap the current paragraph
 
 -- Telescope Triggers
 map('n', '<leader>tf', '<cmd>lua require("telescope.builtin").find_files()<CR>', n)
