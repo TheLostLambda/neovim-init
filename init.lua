@@ -27,11 +27,12 @@ require 'paq' {
   'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
   'windwp/nvim-autopairs';            -- Automatically pair some characters
   'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
-  -- 'Olical/conjure';                   -- Add lovely lisp support
+  'Olical/conjure';                   -- Add lovely lisp support
   'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
   'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
   'radenling/vim-dispatch-neovim';    -- A neovim patch for `vim-dispatch`
-  'edwinb/idris2-vim';                -- Idris 2 language support (no LSP yet)
+  'ShinKage/idris2-nvim';             -- Some nicer Idris LSP support
+  'MunifTanjim/nui.nvim';             -- A dependency for `idris2-nvim`
 }
 
 -- Built-In Options
@@ -105,6 +106,17 @@ lsp.clojure_lsp.setup(universal_config)
 lsp.emmet_ls.setup(universal_config)
 lsp.svelte.setup(universal_config)
 lsp.tsserver.setup(universal_config)
+lsp.html.setup {
+  on_attach = universal_config.on_attach,
+  filetypes = { "html", "htmldjango" }
+}
+lsp.cssls.setup(universal_config)
+lsp.eslint.setup(universal_config)
+lsp.jsonls.setup(universal_config)
+lsp.tailwindcss.setup(universal_config)
+
+-- Enable an enhanced version of the idris2 LSP
+require('idris2').setup({})
 
 -- Load a Fancy Status-Line
 require('lualine').setup()
