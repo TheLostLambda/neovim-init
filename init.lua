@@ -135,10 +135,7 @@ require('lsp_signature').on_attach {
 }
 -- Set up nvim-cmp.
 local cmp = require'cmp'
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
+
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
@@ -147,8 +144,8 @@ cmp.setup({
     end,
   },
   window = {
-    -- completion = cmp.config.window.bordered(),
-    -- documentation = cmp.config.window.bordered(),
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
   },
   mapping = cmp.mapping.preset.insert({
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -156,27 +153,6 @@ cmp.setup({
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -185,19 +161,6 @@ cmp.setup({
     { name = 'buffer' },
   })
 })
--- require('cmp').setup({
---   snippet = {
---     expand = function(args)
---       require('luasnip').lsp_expand(args.body)
---     end,
---   },
---   sources = cmp.config.sources({
---     { name = 'nvim_lsp' },
---     { name = 'luasnip' },
---   }, {
---     { name = 'buffer' },
---   })
--- })
 
 -- Complete Bracket Pairs
 require('nvim-autopairs').setup()
@@ -206,11 +169,6 @@ cmp.event:on(
   'confirm_done',
   cmp_autopairs.on_confirm_done()
 )
--- require("nvim-autopairs.completion.compe").setup({
---   map_cr = true,        -- Map <CR> on insert mode
---   map_complete = true,  -- Auto insert `(` after a function or method item
---   auto_select = true,   -- Auto select first item
--- })
 
 -- Set Up Which-Key To Show Keybindings & Spelling
 require('which-key').setup {
@@ -250,11 +208,6 @@ local map = vim.api.nvim_set_keymap
 local ns = {noremap = true, silent = true}
 local n = {noremap = true}
 local e = {expr = true}
-
--- Tab Completion
---map('i', '<CR>',    'pumvisible() ? compe#close() . "\\<CR>" : "\\<CR>"', e)
--- map('i', '<Tab>',   'cmp#confirm("<Tab>")', e)
--- map('i', '<S-Tab>', '<C-n>', e)
 
 -- Snippet Traversal
 map('s', '<C-l>', '"<Plug>(vsnip-jump-next)"', e)
