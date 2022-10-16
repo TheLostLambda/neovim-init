@@ -12,11 +12,16 @@ require 'paq' {
   'nvim-treesitter/nvim-treesitter';  -- Support for better syntax highlighting
   'neovim/nvim-lspconfig';            -- Automatically launch LSP servers
   'nvim-lua/lsp_extensions.nvim';     -- Enable LSP protocol extensions
-  'hrsh7th/nvim-compe';               -- Enable completions for LSP (Update to nvim-cmp!)
+  'hrsh7th/nvim-cmp';                 -- Enable completions for nvim
+  'hrsh7th/cmp-nvim-lsp';             -- LSP completions
+  'hrsh7th/cmp-buffer';               -- Buffer completions
+  'hrsh7th/cmp-path';                 -- Path completions
+  'hrsh7th/cmp-cmdline';              -- Command completions
   'ray-x/lsp_signature.nvim';         -- Enable function parameter hints in LSP
   'tami5/lspsaga.nvim';               -- Add some nice UI components to LSP
   'RRethy/vim-illuminate';            -- Use LSP to highlight hovered symbols
-  'hrsh7th/vim-vsnip';                -- Basic snippet support
+  'L3MON4D3/LuaSnip';                 -- Basic snippet support
+  'saadparwaiz1/cmp_luasnip';         -- LuaSnip nvim-cmp source
   'rafamadriz/friendly-snippets';     -- A collection of community snippets
   'ggandor/leap.nvim';                -- Provides enhanced buffer navigation
   'nvim-telescope/telescope.nvim';    -- A powerful fuzzy-finder
@@ -27,7 +32,7 @@ require 'paq' {
   'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
   'windwp/nvim-autopairs';            -- Automatically pair some characters
   'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
-  'Olical/conjure';                   -- Add lovely lisp support
+  -- 'Olical/conjure';                   -- Add lovely lisp support
   'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
   'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
   'radenling/vim-dispatch-neovim';    -- A neovim patch for `vim-dispatch`
@@ -128,26 +133,84 @@ require('lsp_signature').on_attach {
   hint_prefix = '',
   use_lspsaga = true
 }
-
-require('compe').setup {
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
+-- Set up nvim-cmp.
+local cmp = require'cmp'
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+    end,
   },
-  preselect = 'always'
-}
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' }, -- For luasnip users.
+  }, {
+    { name = 'buffer' },
+  })
+})
+-- require('cmp').setup({
+--   snippet = {
+--     expand = function(args)
+--       require('luasnip').lsp_expand(args.body)
+--     end,
+--   },
+--   sources = cmp.config.sources({
+--     { name = 'nvim_lsp' },
+--     { name = 'luasnip' },
+--   }, {
+--     { name = 'buffer' },
+--   })
+-- })
 
 -- Complete Bracket Pairs
 require('nvim-autopairs').setup()
-require("nvim-autopairs.completion.compe").setup({
-  map_cr = true,        -- Map <CR> on insert mode
-  map_complete = true,  -- Auto insert `(` after a function or method item
-  auto_select = true,   -- Auto select first item
-})
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
+-- require("nvim-autopairs.completion.compe").setup({
+--   map_cr = true,        -- Map <CR> on insert mode
+--   map_complete = true,  -- Auto insert `(` after a function or method item
+--   auto_select = true,   -- Auto select first item
+-- })
 
 -- Set Up Which-Key To Show Keybindings & Spelling
 require('which-key').setup {
@@ -190,8 +253,8 @@ local e = {expr = true}
 
 -- Tab Completion
 --map('i', '<CR>',    'pumvisible() ? compe#close() . "\\<CR>" : "\\<CR>"', e)
-map('i', '<Tab>',   'compe#confirm("<Tab>")', e)
-map('i', '<S-Tab>', '<C-n>', e)
+-- map('i', '<Tab>',   'cmp#confirm("<Tab>")', e)
+-- map('i', '<S-Tab>', '<C-n>', e)
 
 -- Snippet Traversal
 map('s', '<C-l>', '"<Plug>(vsnip-jump-next)"', e)
