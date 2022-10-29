@@ -7,7 +7,7 @@ local opt = vim.opt  -- To set options
 -- Install Packages
 require 'paq' {
   'savq/paq-nvim';                    -- Manage the package manager
-  'sainnhe/gruvbox-material';         -- A nice colorscheme
+  'ellisonleao/gruvbox.nvim';         -- A nice colorscheme
   'hoob3rt/lualine.nvim';             -- A snazzy status-line
   'nvim-treesitter/nvim-treesitter';  -- Support for better syntax highlighting
   'neovim/nvim-lspconfig';            -- Automatically launch LSP servers
@@ -69,7 +69,24 @@ opt.swapfile = false           -- Disable the swap files (allow multiple access)
 opt.clipboard = 'unnamedplus'  -- Use the system clipboard
 
 -- Make Things Look Nice
-cmd 'colorscheme gruvbox-material'
+require("gruvbox").setup({
+  undercurl = true,
+  underline = true,
+  bold = false,
+  italic = false,
+  strikethrough = true,
+  invert_selection = false,
+  invert_signs = false,
+  invert_tabline = false,
+  invert_intend_guides = false,
+  inverse = true, -- invert background for search, diffs, statuslines and errors
+  contrast = "soft", -- can be "hard", "soft" or empty string
+  palette_overrides = {},
+  overrides = {},
+  dim_inactive = false,
+  transparent_mode = false,
+})
+vim.cmd("colorscheme gruvbox")
 
 -- Set up enhanced buffer navigation
 require('leap').set_default_keymaps()
