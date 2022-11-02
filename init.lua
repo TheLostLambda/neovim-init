@@ -32,7 +32,7 @@ require 'paq' {
   'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
   'windwp/nvim-autopairs';            -- Automatically pair some characters
   'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
-  -- 'Olical/conjure';                   -- Add lovely lisp support
+  'Olical/conjure';                   -- Add lovely lisp support
   'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
   'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
   'radenling/vim-dispatch-neovim';    -- A neovim patch for `vim-dispatch`
@@ -106,6 +106,10 @@ require('Comment').setup()
 -- Treesitter Based Folding
 -- opt.foldmethod = 'expr'
 -- opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
+-- Interactive development with Conjure
+-- TODO: Make this a lua function call?
+g["conjure#filetypes"] = { "julia", "lisp" }
 
 -- Set Up LSP UI & Servers
 require('lspsaga').init_lsp_saga()
