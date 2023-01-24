@@ -5,40 +5,46 @@ local g = vim.g      -- A table to access global variables
 local opt = vim.opt  -- To set options
 
 -- Install Packages
-require 'paq' {
-  'savq/paq-nvim';                    -- Manage the package manager
-  'ellisonleao/gruvbox.nvim';         -- A nice colorscheme
-  'hoob3rt/lualine.nvim';             -- A snazzy status-line
-  'nvim-treesitter/nvim-treesitter';  -- Support for better syntax highlighting
-  'neovim/nvim-lspconfig';            -- Automatically launch LSP servers
-  'nvim-lua/lsp_extensions.nvim';     -- Enable LSP protocol extensions
-  'hrsh7th/nvim-cmp';                 -- Enable completions for nvim
-  'hrsh7th/cmp-nvim-lsp';             -- LSP completions
-  'hrsh7th/cmp-buffer';               -- Buffer completions
-  'hrsh7th/cmp-path';                 -- Path completions
-  'hrsh7th/cmp-cmdline';              -- Command completions
-  'ray-x/lsp_signature.nvim';         -- Enable function parameter hints in LSP
-  'tami5/lspsaga.nvim';               -- Add some nice UI components to LSP
-  'RRethy/vim-illuminate';            -- Use LSP to highlight hovered symbols
-  'L3MON4D3/LuaSnip';                 -- Basic snippet support
-  'saadparwaiz1/cmp_luasnip';         -- LuaSnip nvim-cmp source
-  'rafamadriz/friendly-snippets';     -- A collection of community snippets
-  'ggandor/leap.nvim';                -- Provides enhanced buffer navigation
-  'nvim-telescope/telescope.nvim';    -- A powerful fuzzy-finder
-  'nvim-lua/plenary.nvim';            -- A dependency for Telescope
-  'nvim-lua/popup.nvim';              -- Another dependency for Telescope
-  'folke/which-key.nvim';             -- An way to show all available keybinds
-  'folke/trouble.nvim';               -- Summarizes errors and lints
-  'kyazdani42/nvim-web-devicons';     -- Add some nice icons for filetypes
-  'windwp/nvim-autopairs';            -- Automatically pair some characters
-  'numToStr/Comment.nvim';            -- Make commenting blocks and lines easier
-  'Olical/conjure';                   -- Add lovely lisp support
-  'clojure-vim/vim-jack-in';          -- Add CIDER middleware for Clojure
-  'tpope/vim-dispatch';               -- A dependency for `vim-jack-in`
-  'radenling/vim-dispatch-neovim';    -- A neovim patch for `vim-dispatch`
-  'ShinKage/idris2-nvim';             -- Some nicer Idris LSP support
-  'MunifTanjim/nui.nvim';             -- A dependency for `idris2-nvim`
-}
+require('packer').startup(function(use)
+  use 'wbthomason/packer.nvim'           -- Manage the package manager
+  use 'ellisonleao/gruvbox.nvim'         -- A nice colorscheme
+  use 'hoob3rt/lualine.nvim'             -- A snazzy status-line
+  use 'nvim-treesitter/nvim-treesitter'  -- Support for better syntax highlighting
+  use 'neovim/nvim-lspconfig'            -- Automatically launch LSP servers
+  use 'nvim-lua/lsp_extensions.nvim'     -- Enable LSP protocol extensions
+  use 'hrsh7th/nvim-cmp'                 -- Enable completions for nvim
+  use 'hrsh7th/cmp-nvim-lsp'             -- LSP completions
+  use 'hrsh7th/cmp-buffer'               -- Buffer completions
+  use 'hrsh7th/cmp-path'                 -- Path completions
+  use 'hrsh7th/cmp-cmdline'              -- Command completions
+  use 'ray-x/lsp_signature.nvim'         -- Enable function parameter hints in LSP
+  use 'tami5/lspsaga.nvim'               -- Add some nice UI components to LSP
+  use 'RRethy/vim-illuminate'            -- Use LSP to highlight hovered symbols
+  use 'L3MON4D3/LuaSnip'                 -- Basic snippet support
+  use 'saadparwaiz1/cmp_luasnip'         -- LuaSnip nvim-cmp source
+  use 'rafamadriz/friendly-snippets'     -- A collection of community snippets
+  use 'ggandor/leap.nvim'                -- Provides enhanced buffer navigation
+  use 'nvim-telescope/telescope.nvim'    -- A powerful fuzzy-finder
+  use 'nvim-lua/plenary.nvim'            -- A dependency for Telescope
+  use 'nvim-lua/popup.nvim'              -- Another dependency for Telescope
+  use 'folke/which-key.nvim'             -- An way to show all available keybinds
+  use 'folke/trouble.nvim'               -- Summarizes errors and lints
+  use 'kyazdani42/nvim-web-devicons'     -- Add some nice icons for filetypes
+  use 'windwp/nvim-autopairs'            -- Automatically pair some characters
+  use 'numToStr/Comment.nvim'            -- Make commenting blocks and lines easier
+  use 'Olical/conjure'                   -- Add lovely lisp support
+  use 'clojure-vim/vim-jack-in'          -- Add CIDER middleware for Clojure
+  use 'tpope/vim-dispatch'               -- A dependency for `vim-jack-in`
+  use 'radenling/vim-dispatch-neovim'    -- A neovim patch for `vim-dispatch`
+  -- use 'ShinKage/idris2-nvim'             -- Some nicer Idris LSP support
+  -- use 'MunifTanjim/nui.nvim'             -- A dependency for `idris2-nvim`
+  -- Support and syntax highlighting for Unison (.u) files
+  -- use {
+  --   'unisonweb/unison',
+  --   branch = 'trunk',
+  --   rtp = 'editor-support/vim'
+  -- }
+end)
 
 -- Built-In Options
 opt.expandtab = true           -- Use spaces instead of tabs
@@ -109,7 +115,7 @@ require('Comment').setup()
 
 -- Interactive development with Conjure
 -- TODO: Make this a lua function call?
-g["conjure#filetypes"] = { "julia", "lisp" }
+g["conjure#filetypes"] = { "lisp" }
 
 -- Set Up LSP UI & Servers
 require('lspsaga').init_lsp_saga()
@@ -140,9 +146,10 @@ lsp.cssls.setup(universal_config)
 lsp.eslint.setup(universal_config)
 lsp.jsonls.setup(universal_config)
 lsp.tailwindcss.setup(universal_config)
+lsp.unison.setup(universal_config)
 
 -- Enable an enhanced version of the idris2 LSP
-require('idris2').setup({})
+-- require('idris2').setup({})
 
 -- Load a Fancy Status-Line
 require('lualine').setup()
@@ -219,8 +226,8 @@ autocmd CursorHold,FocusGained * checktime
 ]]
 
 -- Some aliases for case-insensitivity
-cmd ":command W w"
-cmd ":command Wq wq"
+cmd ":command! W w"
+cmd ":command! Wq wq"
 
 -- Key Bindings
 g.mapleader = " "
